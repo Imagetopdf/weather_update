@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather Update</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #e0f7fa;
+      text-align: center;
+      padding: 50px;
+    }
+    input {
+      padding: 10px;
+      width: 250px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .weather-result {
+      margin-top: 30px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      display: inline-block;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    img {
+      width: 100px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Live Weather Update</h1>
+  <input type="text" id="cityInput" placeholder="Enter city name">
+  <button onclick="getWeather()">Check Weather</button>
+
+  <div class="weather-result" id="weatherResult" style="display:none;">
+    <h2 id="cityName"></h2>
+    <img id="icon" src="" alt="Weather Icon">
+    <p id="temp"></p>
+    <p id="desc"></p>
+    <p id="humidity"></p>
+    <p id="wind"></p>
+  </div>
+
+  <script>
+    const apiKey = 'a17fe5f494a38383e2a4d9d2bfcf7064';
+
+    function getWeather() {
+      const city = document.getElementById("cityInput").value;
+      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.cod === 200) {
+            document.getElementById("weatherResult").style.display = "block";
+            document.getElementById("cityName").innerText = `${data.name}, ${data.sys.country}`;
+            document.getElementById("temp").innerText = `Temperature: ${data.main.temp}°C`;
+            document.getElementById("desc").innerText = `Condition: ${data.weather[0].description}`;
+            document.getElementById("humidity").innerText = `Humidity: ${data.main.humidity}%`;
+            document.getElementById("wind").innerText = `Wind Speed: ${data.wind.speed} m/s`;
+            document.getElementById("icon").src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+          } else {
+            alert("City not found!");
+          }
+        })
+        .catch(error => {
+          alert("Error fetching data");
+          console.error(error);
+        });
+    }
+  </script>
+
+</body>
+</html>
